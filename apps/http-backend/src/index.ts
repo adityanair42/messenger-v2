@@ -21,7 +21,7 @@ app.post("/signup", async (req, res) => {
     try {
         const user = await prismaClient.user.create({
             data: {
-                email: parsedData.data?.username,
+                email: parsedData.data?.email,
                 // TODO: Hash the pw
                 password: parsedData.data.password,
                 name: parsedData.data.name
@@ -32,7 +32,7 @@ app.post("/signup", async (req, res) => {
         })
     } catch(e) {
         res.status(411).json({
-            message: "User already exists with this username"
+            message: "User already exists with this email"
         })
     }
 })
@@ -49,7 +49,7 @@ app.post("/signin", async (req, res) => {
     // TODO: Compare the hashed pws here
     const user = await prismaClient.user.findFirst({
         where: {
-            email: parsedData.data.username,
+            email: parsedData.data.email,
             password: parsedData.data.password
         }
     })
