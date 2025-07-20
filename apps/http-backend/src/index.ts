@@ -1,7 +1,9 @@
-import express from 'express'
+import express from "express";
 import jwt from "jsonwebtoken";
 import { CreateUserSchema, SigninSchema, CreateRoomSchema } from "@repo/zod-auth/types";
 import { prismaClient } from "@repo/db/client";
+import cors from "cors";
+import { JWT_SECRET } from '@repo/common/config';
 
 const app = express();
 app.use(express.json());

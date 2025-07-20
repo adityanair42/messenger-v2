@@ -20,6 +20,9 @@ importers:
 
   apps/http-backend:
     dependencies:
+      '@repo/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@types/cors':
         specifier: ^2.8.19
         version: 2.8.19
@@ -106,6 +109,10 @@ importers:
         version: link:../../packages/typescript-config
 
   packages/common:
+    dependencies:
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
