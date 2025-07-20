@@ -39,9 +39,15 @@ importers:
         specifier: ^9.0.2
         version: 9.0.2
     devDependencies:
+      '@repo/common':
+        specifier: workspace:*
+        version: link:../../packages/common
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
+      '@repo/zod-auth':
+        specifier: workspace:*
+        version: link:../../packages/zod-auth
 
   apps/web:
     dependencies:
