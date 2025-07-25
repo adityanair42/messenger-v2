@@ -1,8 +1,31 @@
 
+
 export function Navbar() {
   return(
     <nav className="sticky top-0 py-3 border-b  border-neutral-700/80">
-      hi there
+      <div className="container px-4 mx-auto relative lg:text-sm">
+        <div className="flex justify-between items-center">
+          <div className="text-xl">
+            Messenger-V2
+          </div>
+          <div className="flex">
+            <div className="mx-7">
+              About
+            </div>
+            <div className="mx-7">
+              Features
+            </div>
+          </div>
+          <div className="flex justify-center items-center space-x-12">
+            <button className="text-md px-4 py-2 rounded-md border">
+              SignIn
+            </button>
+            <button className="bg-gradient-to-r from-orange-400 to-orange-800 text-md px-4 py-2 mx-3 rounded-md">
+              Create an Account
+            </button>
+          </div>
+        </div>
+      </div>
     </nav>
   )
 }
