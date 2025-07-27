@@ -4,13 +4,13 @@ export default function SignIn() {
       <div className="relative flex justify-center items-center h-111 w-71 rounded-xl bg-white bg-gradient-to-r from-orange-500 to-red-800">
         <div className="flex flex-col items-center rounded-xl h-110 w-70 bg-black">
         <div className="text-3xl text-neutral-300 mt-13 mb-17 font-medium">
-          Sign In
+          Log In
         </div>
         <input type="text" placeholder="email"        className="py-2 border rounded-md px-2 my-2 bg-neutral-800"/>
         <input type="password" placeholder="password" className="py-2 border rounded-md px-2 my-2 bg-neutral-800" />
 
         <button className="mt-17 px-21 rounded-md py-2 bg-gradient-to-r from-orange-500 to-red-800">
-          Sign In
+          Log In
         </button>
       </div>
       </div>
