@@ -1,4 +1,4 @@
-
+import logo from "./../app/media/logo.png"
 
 export function Navbar() {
   return (
@@ -7,7 +7,7 @@ export function Navbar() {
         <div className="flex justify-between items-center">
           <div className="flex justify-center flex-shrink-0">
             <div className="text-xl">
-              Messenger-V2
+              Messenger
             </div>
           </div>
           <div className="flex">
@@ -19,10 +19,10 @@ export function Navbar() {
             </div>
           </div>
           <div className="flex justify-center items-center space-x-12">
-            <button className="text-md px-4 py-2 rounded-md border">
+            <button className="text-md px-3 py-2 rounded-md border">
               Sign In
             </button>
-            <button className="bg-gradient-to-r from-orange-400 to-orange-800 text-md px-4 py-2 mx-3 rounded-md">
+            <button className="bg-gradient-to-r from-orange-400 to-orange-800 text-md px-3 py-2 rounded-md">
               Create an account
             </button>
           </div>
