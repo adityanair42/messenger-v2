@@ -19,10 +19,7 @@ export function middleware(req: Request, res: Response, next: NextFunction) {
     req.userId = decoded.userId;
     // @ts-ignore
     req.username = decoded.username;
-        // @ts-ignore
-        console.log(req.userId)
-        // @ts-ignore
-        console.log(req.username)
+    
     
     next();
   } catch (e) {

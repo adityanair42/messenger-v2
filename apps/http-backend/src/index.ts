@@ -86,6 +86,7 @@ app.post('/room', middleware, async (req, res) => {
   //@ts-ignore
   const userId = req.userId
   //@ts-ignore
+  console.log(req.username)
 
   try{
     const room = await prismaClient.room.create({
