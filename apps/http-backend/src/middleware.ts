@@ -3,29 +3,29 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "@repo/common/config";
 
 export function middleware(req: Request, res: Response, next: NextFunction) {
-  // Get the header, which looks like "Bearer <token>"
-  const authHeader = req.headers["authorization"];
+  // The entire header value is now treated as the token
+  const token = req.headers["authorization"];
 
-  // If there's no header or it's empty, block the request
-  if (!authHeader) {
-    return res.status(403).json({ message: "Unauthorized" });
+  // Check if a token was sent at all
+  if (!token) {
+    return res.status(403).json({ message: "Unauthorized: Token not sent" });
   }
 
   try {
-    // 1. Split "Bearer " off and get JUST the token
-    const token = authHeader.split(' ')[1];
-
-    // 2. Verify the token
+    // Verify the token directly
     const decoded = jwt.verify(token, JWT_SECRET);
-
-    // 3. Attach the data to the request and continue
+    
     // @ts-ignore
     req.userId = decoded.userId;
     // @ts-ignore
     req.username = decoded.username;
+        // @ts-ignore
+        console.log(req.userId)
+        // @ts-ignore
+        console.log(req.username)
+    
     next();
   } catch (e) {
-    // If the token is bad or missing, jwt.verify will fail and we'll end up here
-    res.status(403).json({ message: "Unauthorized" });
+    res.status(403).json({ message: "Unauthorized: Invalid token" });
   }
 }
