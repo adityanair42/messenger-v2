@@ -6,9 +6,8 @@
     "./*": "./src/*.tsx"
   },
   "scripts": {
-    "lint": "eslint . --max-warnings 0",
-    "generate:component": "turbo gen react-component",
-    "check-types": "tsc --noEmit"
+    "build": "tsc -b",
+    "dev": "tsc -b --watch"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
@@ -24,3 +23,4 @@
     "react-dom": "^19.1.0"
   }
 }
+

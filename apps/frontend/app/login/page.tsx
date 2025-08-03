@@ -6,7 +6,7 @@ export default function SignIn() {
         <div className="text-3xl text-neutral-300 mt-13 mb-17 font-medium">
           Log In
         </div>
-        <input type="text" placeholder="email"        className="py-2 border rounded-md px-2 my-2 bg-neutral-800"/>
+        <input type="text" placeholder="name"         className="py-2 border rounded-md px-2 my-2 bg-neutral-800" />
         <input type="password" placeholder="password" className="py-2 border rounded-md px-2 my-2 bg-neutral-800" />
 
         <button className="mt-17 px-21 rounded-md py-2 bg-gradient-to-r from-orange-500 to-red-800">

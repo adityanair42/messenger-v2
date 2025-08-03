@@ -50,7 +50,7 @@ app.post("/signin", async (req, res) => {
     // TODO: Compare the hashed pws here
     const user = await prismaClient.user.findFirst({
         where: {
-            email: parsedData.data.email,
+            name: parsedData.data.name,
             password: parsedData.data.password
         }
     })
@@ -62,8 +62,11 @@ app.post("/signin", async (req, res) => {
         return
     }
 
+
+
     const token = jwt.sign({
-        userId: user?.id
+        userId: user?.id,
+        username: user?.name
     }, JWT_SECRET)
 
     res.json({
@@ -82,6 +85,7 @@ app.post('/room', middleware, async (req, res) => {
 
   //@ts-ignore
   const userId = req.userId
+  //@ts-ignore
 
   try{
     const room = await prismaClient.room.create({
@@ -140,5 +144,35 @@ app.get("/room/:slug", async (req, res) => {
         room
     })
 })
+
+app.get("/user/:userId", async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const user = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            },
+            select: {
+                name: true
+            }
+        });
+
+        if (!user) {
+            res.status(404).json({
+                message: "User not found"
+            });
+            return;
+        }
+
+        res.json({
+            username: user.name
+        });
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({
+            message: "An error occurred"
+        });
+    }
+});
 
 app.listen(3001)
