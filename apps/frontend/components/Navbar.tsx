@@ -10,12 +10,15 @@ export function Navbar() {
               Messenger
             </div>
           </div>
-          <div className="flex">
+          <div className="flex ml-30">
             <div className="mx-7">
               About
             </div>
             <div className="mx-7">
               Features
+            </div>
+            <div className="mx-7">
+              Pricing
             </div>
           </div>
           <div className="flex justify-center items-center space-x-12">
