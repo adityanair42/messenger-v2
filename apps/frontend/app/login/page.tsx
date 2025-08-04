@@ -20,7 +20,11 @@ export default function SignIn() {
       });
       
       if (response.data.token) {
+        const name = usernameRef.current?.value;
         localStorage.setItem("token", response.data.token);
+        if (name) {
+          localStorage.setItem("name", name); 
+        }
         router.push("/");
       } else {
         alert("Login failed: No token received.");
@@ -37,7 +41,7 @@ export default function SignIn() {
           alert(`Login failed: Server responded with status ${error.response.status}.`);
         }
       } else if (error.request) {
-        alert("Login failed: No response from server. Is it running?");
+        alert("Login failed: No response from server.");
       } else {
         alert("An unexpected error occurred.");
       }

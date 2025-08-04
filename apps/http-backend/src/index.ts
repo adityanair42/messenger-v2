@@ -76,35 +76,34 @@ app.post("/signin", async (req, res) => {
 })
 
 app.post('/room', middleware, async (req, res) => {
-  const parsedData = CreateRoomSchema.safeParse(req.body)
+  const parsedData = CreateRoomSchema.safeParse(req.body);
   if(!parsedData.success){
     res.json({
       message: "Incorrect Inputs"
-    })
-    return
+    });
+    return;
   }
 
   //@ts-ignore
-  const userId = req.userId
+  const userId = req.userId;
 
-
-  try{
+  try {
     const room = await prismaClient.room.create({
         data: {
             slug: parsedData.data.name,
             adminId: userId
         }
-    })
+    });
 
     res.json({
         roomId: parsedData.data.name
-    })
+    });
   } catch(e) {
-    res.status(411).json({
+    res.status(409).json({
         message: "Room already exists with this name"
-    })
+    });
   }
-})
+});
 
 app.get("/chats/:roomId", async (req, res) => {
     try {

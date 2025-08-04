@@ -3,23 +3,25 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "@repo/common/config";
 
 export function middleware(req: Request, res: Response, next: NextFunction) {
-  // The entire header value is now treated as the token
-  const token = req.headers["authorization"];
+  const authHeader = req.headers["authorization"];
 
-  // Check if a token was sent at all
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(403).json({ message: "Unauthorized: Token not provided or malformed" });
+  }
+
+  const token = authHeader.split(' ')[1];
+
   if (!token) {
-    return res.status(403).json({ message: "Unauthorized: Token not sent" });
+    return res.status(403).json({ message: "Unauthorized: Token not provided or malformed" });
   }
 
   try {
-    // Verify the token directly
     const decoded = jwt.verify(token, JWT_SECRET);
     
     // @ts-ignore
     req.userId = decoded.userId;
     // @ts-ignore
     req.username = decoded.username;
-    
     
     next();
   } catch (e) {
