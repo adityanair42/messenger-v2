@@ -7,6 +7,7 @@ import { JWT_SECRET } from '@repo/common/config'
 import { middleware } from './middleware' 
 
 const app = express()
+app.use(cors());
 app.use(express.json())
 
 app.post("/signup", async (req, res) => {
@@ -85,8 +86,7 @@ app.post('/room', middleware, async (req, res) => {
 
   //@ts-ignore
   const userId = req.userId
-  //@ts-ignore
-  console.log(req.username)
+
 
   try{
     const room = await prismaClient.room.create({
@@ -97,7 +97,7 @@ app.post('/room', middleware, async (req, res) => {
     })
 
     res.json({
-        roomId: room.id
+        roomId: parsedData.data.name
     })
   } catch(e) {
     res.status(411).json({

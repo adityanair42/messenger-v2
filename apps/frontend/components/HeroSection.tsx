@@ -5,6 +5,7 @@ export function HeroSection() {
 
   const [Input1, setInput1] = useState(false);
   const [Input2, setInput2] = useState(false);
+  const [roomName, setRoomName] = useState("");
 
   return (
     <div className="flex flex-col items-center mt-45">
@@ -29,7 +30,10 @@ export function HeroSection() {
         )}
         {Input1 && (
           <div>
-            <input type="text" placeholder="Enter room number" className="py-3 px-4 mx-3 rounded-md border" />
+            <input type="text" placeholder="Enter room name" className="py-3 px-4 mx-3 rounded-md border" 
+            onChange={(e) => {
+              setRoomName(e.target.value)
+            }}/>
           </div>
         )}
         {!Input2 && (
