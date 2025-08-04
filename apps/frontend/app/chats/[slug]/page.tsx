@@ -9,13 +9,16 @@ export default async function chats({ params }: { params: { slug: string } }) {
   const chats = chatsResponse.data.messages;
 
   return (
-    <div className="flex-col border px-5 py-5">
-      <Message message={`Room ID: ${roomId}`} />
-      <div>
-        {chats.map((chat: any, index: number) => (
-          <Message key={index} message={chat.message} />
-        ))}
-      </div>
+    // <div className="flex-col border px-5 py-5">
+    //   <Message message={`Room ID: ${roomId}`} />
+    //   <div>
+    //     {chats.map((chat: any, index: number) => (
+    //       <Message key={index} message={chat.message} />
+    //     ))}
+    //   </div>
+    // </div>
+    <div>
+      <Message message={"testing"} name={"aditya"} />
     </div>
   );
 }

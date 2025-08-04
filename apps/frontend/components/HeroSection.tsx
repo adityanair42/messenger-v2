@@ -27,7 +27,7 @@ export function HeroSection() {
         { name: roomName },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      router.push(`/room/${roomName}`);
+      router.push(`/chats/${roomName}`);
     } catch (err) {
       console.error("Failed to create room:", err);
       const error = err as AxiosError;
@@ -43,7 +43,7 @@ export function HeroSection() {
   function handleJoinRoom(event: FormEvent) {
     event.preventDefault();
     if (joinRoomName) {
-      router.push(`/room/${joinRoomName}`);
+      router.push(`/chats/${joinRoomName}`);
     }
   }
 
@@ -91,7 +91,6 @@ export function HeroSection() {
             </button>
           </div>
         )}
-        {/* 3. Form for joining a room */}
         {Input2 && (
           <form onSubmit={handleJoinRoom}>
             <input 
