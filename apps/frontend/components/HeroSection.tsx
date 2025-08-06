@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
 import { FormEvent } from "react";
+import { BACKEND_URL } from "@repo/common/config";
 
 export function HeroSection() {
 
@@ -23,7 +24,7 @@ export function HeroSection() {
     }
 
     try {
-      await axios.post("http://localhost:3001/room", 
+      await axios.post(`${BACKEND_URL}/room`, 
         { name: roomName },
         { headers: { Authorization: `Bearer ${token}` } }
       );

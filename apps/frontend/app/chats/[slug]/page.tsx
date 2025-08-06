@@ -4,6 +4,8 @@ import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import { useParams } from 'next/navigation';
 import { Message } from "./message";
+import { WS_URL } from "@repo/common/config";
+import { BACKEND_URL } from "@repo/common/config";
 
 interface Chat {
   id: number | string;
@@ -54,7 +56,7 @@ export default function ChatPage() {
       }
 
       try {
-        const roomResponse = await axios.get<{ room: Room | null }>(`http://localhost:3001/room/${slug}`);
+        const roomResponse = await axios.get<{ room: Room | null }>(`${BACKEND_URL}/room/${slug}`);
         const currentRoom = roomResponse.data.room;
 
         if (!currentRoom) {
@@ -64,10 +66,10 @@ export default function ChatPage() {
         }
         setRoom(currentRoom);
 
-        const chatResponse = await axios.get<{ messages: Chat[] }>(`http://localhost:3001/chats/${currentRoom.id}`);
+        const chatResponse = await axios.get<{ messages: Chat[] }>(`${BACKEND_URL}/chats/${currentRoom.id}`);
         setMessages(chatResponse.data.messages.reverse() || []);
 
-        ws.current = new WebSocket(`ws://localhost:8080?token=${token}`);
+        ws.current = new WebSocket(`${WS_URL}?token=${token}`);
 
         ws.current.onopen = () => {
           ws.current?.send(JSON.stringify({
@@ -79,7 +81,12 @@ export default function ChatPage() {
         ws.current.onmessage = (event) => {
           const receivedMessage = JSON.parse(event.data);
           if (receivedMessage.type === 'chat') {
-            setMessages(prevMessages => [...prevMessages, receivedMessage]);
+            setMessages(prevMessages => {
+              if (prevMessages.some(msg => msg.id === receivedMessage.id)) {
+                return prevMessages;
+              }
+              return [...prevMessages, receivedMessage];
+            });
           }
         };
 
@@ -129,8 +136,8 @@ export default function ChatPage() {
 
       <div ref={chatContainerRef} className="flex-grow overflow-y-auto mb-4 pr-2 space-y-4">
         {messages.length > 0 ? (
-          messages.map((chat, index) => (
-            <Message key={chat.id || `msg-${index}`} chat={chat} currentUser={currentUser} />
+          messages.map((chat) => (
+            <Message key={chat.id} chat={chat} currentUser={currentUser} />
           ))
         ) : (
           <p className="text-gray-500 text-center">No messages yet. Be the first to say something!</p>

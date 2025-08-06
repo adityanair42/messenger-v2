@@ -3,6 +3,7 @@
 import { useRef, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
+import { BACKEND_URL } from "@repo/common/config";
 
 export default function SignUp() {
   const router = useRouter();
@@ -14,7 +15,7 @@ export default function SignUp() {
     event.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:3001/signup", {
+      const response = await axios.post(`${BACKEND_URL}/signup`, {
         email: emailRef.current?.value,
         name: nameRef.current?.value,
         password: passwordRef.current?.value,

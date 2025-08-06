@@ -3,6 +3,7 @@
 import axios, { AxiosError } from "axios";
 import { useRef, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { BACKEND_URL } from "@repo/common/config";
 
 export default function SignIn() {
   const router = useRouter();
@@ -24,7 +25,7 @@ export default function SignIn() {
       const nameValue = usernameRef.current.value.trim();
       const passwordValue = passwordRef.current.value.trim();
       
-      const response = await axios.post("http://localhost:3001/signin", {
+      const response = await axios.post(`${BACKEND_URL}/signin`, {
         name: nameValue,
         password: passwordValue,
       });
