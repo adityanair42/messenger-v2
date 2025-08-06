@@ -19,12 +19,13 @@ interface Room {
 export default function ChatPage() {
   const params = useParams();
   const slug = params.slug as string;
-  
+
   const [messages, setMessages] = useState<Chat[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [room, setRoom] = useState<Room | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<string | null>(null); // To store logged-in user's name
   const ws = useRef<WebSocket | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -35,6 +36,10 @@ export default function ChatPage() {
   }, [messages]);
 
   useEffect(() => {
+    // Get the current user's name from localStorage
+    const name = localStorage.getItem('name');
+    setCurrentUser(name);
+
     if (!slug) {
       setLoading(false);
       setError("Room slug not found in URL.");
@@ -62,7 +67,7 @@ export default function ChatPage() {
 
         const chatResponse = await axios.get<{ messages: Chat[] }>(`http://localhost:3001/chats/${currentRoom.id}`);
         setMessages(chatResponse.data.messages.reverse() || []);
-        
+
         ws.current = new WebSocket(`ws://localhost:8080?token=${token}`);
 
         ws.current.onopen = () => {
@@ -83,8 +88,8 @@ export default function ChatPage() {
           console.error("WebSocket error:", err);
           setError("Connection error. Please refresh the page.");
         };
-        
-        ws.current.onclose = () => {};
+
+        ws.current.onclose = () => { };
 
       } catch (err) {
         console.error("Failed to initialize chat:", err);
@@ -95,7 +100,6 @@ export default function ChatPage() {
     };
 
     initializeChat();
-
 
     return () => {
       ws.current?.close();
@@ -120,11 +124,12 @@ export default function ChatPage() {
   return (
     <div className="flex flex-col h-screen p-4">
       <h1 className="text-2xl font-bold border-b pb-2 mb-4">{slug}</h1>
-      
-      <div ref={chatContainerRef} className="flex-grow overflow-y-auto mb-4 pr-2">
+
+      <div ref={chatContainerRef} className="flex-grow overflow-y-auto mb-4 pr-2 space-y-4">
         {messages.length > 0 ? (
           messages.map((chat, index) => (
-            <Message key={chat.id || `msg-${index}`} message={`${chat.username || 'User'}: ${chat.message}`} />
+            // Pass the chat object and current user to the Message component
+            <Message key={chat.id || `msg-${index}`} chat={chat} currentUser={currentUser} />
           ))
         ) : (
           <p className="text-gray-500 text-center">No messages yet. Be the first to say something!</p>
