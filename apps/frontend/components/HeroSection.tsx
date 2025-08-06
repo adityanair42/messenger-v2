@@ -9,7 +9,7 @@ export function HeroSection() {
   const [Input1, setInput1] = useState(false);
   const [Input2, setInput2] = useState(false);
   const [roomName, setRoomName] = useState("");
-  const [joinRoomName, setJoinRoomName] = useState(""); // 1. State for the "Join Room" input
+  const [joinRoomName, setJoinRoomName] = useState(""); 
   const router = useRouter();
 
   async function handleCreateRoom(event: FormEvent) {
@@ -39,7 +39,7 @@ export function HeroSection() {
     }
   }
   
-  // 2. Handler function for joining a room
+
   function handleJoinRoom(event: FormEvent) {
     event.preventDefault();
     if (joinRoomName) {

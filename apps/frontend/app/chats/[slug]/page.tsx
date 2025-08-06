@@ -25,7 +25,7 @@ export default function ChatPage() {
   const [room, setRoom] = useState<Room | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentUser, setCurrentUser] = useState<string | null>(null); // To store logged-in user's name
+  const [currentUser, setCurrentUser] = useState<string | null>(null); 
   const ws = useRef<WebSocket | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -36,7 +36,6 @@ export default function ChatPage() {
   }, [messages]);
 
   useEffect(() => {
-    // Get the current user's name from localStorage
     const name = localStorage.getItem('name');
     setCurrentUser(name);
 
@@ -123,12 +122,14 @@ export default function ChatPage() {
 
   return (
     <div className="flex flex-col h-screen p-4">
-      <h1 className="text-2xl font-bold border-b pb-2 mb-4">{slug}</h1>
+      <div className="flex justify-between items-center border-b pb-2 mb-4 pb-4">
+        <h1 className="text-2xl font-bold">{slug}</h1>
+        <h1 className="text-2xl font-bold">{currentUser}</h1>
+      </div>
 
       <div ref={chatContainerRef} className="flex-grow overflow-y-auto mb-4 pr-2 space-y-4">
         {messages.length > 0 ? (
           messages.map((chat, index) => (
-            // Pass the chat object and current user to the Message component
             <Message key={chat.id || `msg-${index}`} chat={chat} currentUser={currentUser} />
           ))
         ) : (
