@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import logo from "./../app/media/logo.png";
+import Link from "next/link"; 
 
 export function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -34,12 +34,17 @@ export function Navbar() {
               <div className="ml-40 mr-10 text-lg font-medium">{name}</div>
             ) : (
               <>
-                <button className="text-md px-3 py-2 rounded-md border">
-                  Sign In
-                </button>
-                <button className="bg-gradient-to-r from-orange-400 to-orange-800 text-md px-3 py-2 rounded-md">
-                  Create an account
-                </button>
+                <Link href="/login">
+                  <button className="text-md px-3 py-2 rounded-md border">
+                    Sign In
+                  </button>
+                </Link>
+
+                <Link href="/signup">
+                  <button className="bg-gradient-to-r from-orange-400 to-orange-800 text-md px-3 py-2 rounded-md">
+                    Create an account
+                  </button>
+                </Link>
               </>
             )}
           </div>

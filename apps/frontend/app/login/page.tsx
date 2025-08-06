@@ -12,19 +12,26 @@ export default function SignIn() {
   async function login(event: FormEvent) {
     event.preventDefault();
 
-    try {
+    if (!usernameRef.current || !passwordRef.current) {
+        alert("An unexpected error occurred. Please try again.");
+        return;
+    }
+
+    try { 
       localStorage.removeItem("token");
+      localStorage.removeItem("name");
+      
+      const nameValue = usernameRef.current.value.trim();
+      const passwordValue = passwordRef.current.value.trim();
+      
       const response = await axios.post("http://localhost:3001/signin", {
-        name: usernameRef.current?.value,
-        password: passwordRef.current?.value,
+        name: nameValue,
+        password: passwordValue,
       });
       
       if (response.data.token) {
-        const name = usernameRef.current?.value;
         localStorage.setItem("token", response.data.token);
-        if (name) {
-          localStorage.setItem("name", name); 
-        }
+        localStorage.setItem("name", nameValue); 
         router.push("/");
       } else {
         alert("Login failed: No token received.");
@@ -35,7 +42,7 @@ export default function SignIn() {
       
       const error = err as AxiosError;
       if (error.response) {
-        if (error.response.status === 401) {
+        if (error.response.status === 403) {
           alert("Login failed: Invalid username or password.");
         } else {
           alert(`Login failed: Server responded with status ${error.response.status}.`);

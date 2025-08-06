@@ -11,69 +11,51 @@ interface User {
   userId: string;
 }
 
-const users: User[] = [];
+const users = new Map<WebSocket, User>();
 
 function checkUser(token: string): { userId: string; username: string } | null {
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
-
     if (!decoded || !decoded.userId || !decoded.username) {
       return null;
     }
-
     return { userId: decoded.userId, username: decoded.username };
   } catch (e) {
     return null;
   }
 }
 
-wss.on('connection', function connection(ws, request) {
-  const url = request.url;
-  if (!url) {
-    return;
-  }
-  const queryParams = new URLSearchParams(url.split('?')[1]);
-  const token = queryParams.get('token') || '';
-  
-  const userInfo = checkUser(token);
-
-  if (userInfo === null) {
-    ws.close();
-    return;
-  }
-
-  users.push({
-    userId: userInfo.userId,
-    rooms: [],
-    ws
-  });
-
-  ws.on('message', async function message(data) {
+async function handleMessage(ws: WebSocket, userInfo: { userId: string, username: string }, data: Buffer | string) {
     let parsedData;
-    if (typeof data !== 'string') {
-      parsedData = JSON.parse(data.toString());
-    } else {
-      parsedData = JSON.parse(data);
+    try {
+      if (typeof data !== 'string') {
+          parsedData = JSON.parse(data.toString());
+      } else {
+          parsedData = JSON.parse(data);
+      }
+    } catch(e) {
+        console.error("Failed to parse incoming message:", e);
+        return;
     }
 
+    const currentUser = users.get(ws);
+    if (!currentUser) return;
+
     if (parsedData.type === 'join_room') {
-      const user = users.find(x => x.ws === ws);
-      user?.rooms.push(parsedData.roomId);
+      if (!currentUser.rooms.includes(parsedData.roomId)) {
+        currentUser.rooms.push(parsedData.roomId);
+      }
     }
 
     if (parsedData.type === 'leave_room') {
-      const user = users.find(x => x.ws === ws);
-      if (!user) {
-        return;
-      }
-      user.rooms = user?.rooms.filter(x => x !== parsedData.room);
+        currentUser.rooms = currentUser.rooms.filter(x => x !== parsedData.room);
     }
 
     if (parsedData.type === 'chat') {
       const roomId = parsedData.roomId;
       const message = parsedData.message;
 
-      await prismaClient.chat.create({
+      const newDbMessage = await prismaClient.chat.create({
         data: {
           roomId: Number(roomId),
           message,
@@ -82,18 +64,49 @@ wss.on('connection', function connection(ws, request) {
         }
       });
 
-      users.forEach(user => {
+      const payload = JSON.stringify({
+          type: 'chat',
+          message: newDbMessage.message,
+          roomId,
+          username: newDbMessage.username,
+          id: newDbMessage.id
+      });
+      
+      users.forEach((user) => {
         if (user.rooms.includes(roomId)) {
-          user.ws.send(
-            JSON.stringify({
-              type: 'chat',
-              message: message,
-              roomId,
-              username: userInfo.username
-            })
-          );
+          user.ws.send(payload);
         }
       });
     }
+}
+
+wss.on('connection', function connection(ws, request) {
+  const url = request.url;
+  if (!url) { return; }
+
+  const queryParams = new URLSearchParams(url.split('?')[1]);
+  const token = queryParams.get('token') || '';
+  
+  const userInfo = checkUser(token);
+  if (userInfo === null) {
+    ws.close();
+    return;
+  }
+
+  users.set(ws, {
+    userId: userInfo.userId,
+    rooms: [],
+    ws
+  });
+
+
+  const messageHandler = (data: Buffer | string) => handleMessage(ws, userInfo, data);
+  
+  ws.on('message', messageHandler);
+  
+  ws.on('close', () => {
+    ws.off('message', messageHandler);
+    users.delete(ws);
+    console.log('Client disconnected, user removed.');
   });
 });

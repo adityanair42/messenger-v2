@@ -40,40 +40,40 @@ app.post("/signup", async (req, res) => {
 })
 
 app.post("/signin", async (req, res) => {
-    const parsedData = SigninSchema.safeParse(req.body)
+    const parsedData = SigninSchema.safeParse(req.body);
     if (!parsedData.success) {
         res.json({
             message: "Incorrect inputs"
-        })
-        return
+        });
+        return;
     }
 
-    // TODO: Compare the hashed pws here
+    const name = parsedData.data.name.trim();
+    const password = parsedData.data.password.trim();
+
     const user = await prismaClient.user.findFirst({
         where: {
-            name: parsedData.data.name,
-            password: parsedData.data.password
+            name: name,
+            password: password
         }
-    })
+    });
 
     if (!user) {
         res.status(403).json({
             message: "Not authorized"
-        })
-        return
+        });
+        return;
     }
-
-
 
     const token = jwt.sign({
         userId: user?.id,
         username: user?.name
-    }, JWT_SECRET)
+    }, JWT_SECRET);
 
     res.json({
         token
-    })
-})
+    });
+});
 
 app.post('/room', middleware, async (req, res) => {
   const parsedData = CreateRoomSchema.safeParse(req.body);
@@ -149,7 +149,7 @@ app.get("/user/:userId", async (req, res) => {
     try {
         const userId = req.params.userId;
         const user = await prismaClient.user.findUnique({
-            where: {
+            where: {    
                 id: userId
             },
             select: {
