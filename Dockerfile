@@ -1,14 +1,22 @@
-FROM node:20-slim AS base
-WORKDIR /app
-RUN npm install -g pnpm
-FROM base AS builder
+FROM node:20
+
+WORKDIR /usr/src/app
+
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY packages ./packages
-COPY apps ./apps
-RUN pnpm install --frozen-lockfile
+
+COPY packages/db/package.json ./packages/db/
+COPY apps/http-backend/package.json ./apps/http-backend/
+
+RUN npm install -g pnpm
+RUN pnpm install --filter http-backend...
+
 COPY packages/db/prisma ./packages/db/prisma
+
 RUN pnpm --filter @repo/db exec prisma generate
-RUN pnpm run build
-FROM base AS runner
-COPY --from=builder /app .
-CMD ["pnpm", "start"]
+
+COPY . .
+
+RUN pnpm --filter http-backend build
+
+EXPOSE 3001
+CMD ["pnpm", "--filter", "http-backend", "start"]

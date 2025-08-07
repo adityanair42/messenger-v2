@@ -15,26 +15,24 @@ services:
   http-backend:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./apps/http-backend/Dockerfile
     ports:
       - "3001:3001"
     environment:
       DATABASE_URL: "postgresql://postgres_user:dockerpassword@db:5432/messengerv2_db"
-      JWT_SECRET: "your_jwt_secret" 
-    command: pnpm --filter http-backend start
+      JWT_SECRET: "your_jwt_secret"
     depends_on:
       - db
 
   ws-backend:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./apps/ws-backend/Dockerfile
     ports:
       - "8080:8080"
     environment:
       DATABASE_URL: "postgresql://postgres_user:dockerpassword@db:5432/messengerv2_db"
       JWT_SECRET: "your_jwt_secret"
-    command: pnpm --filter ws-backend start
     depends_on:
       - db
 
